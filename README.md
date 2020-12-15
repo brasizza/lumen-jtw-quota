@@ -1,4 +1,4 @@
-# Lumen with JWT
+# Lumen com JWT
 
 [Artigo no Medium](https://marcusbrasizza.medium.com/utilizando-jwt-no-lumen-parte-1-50533175dad3)
 
