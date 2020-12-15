@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Observers\UserObserver;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -13,7 +14,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
-    use Authenticatable, Authorizable, HasFactory;
+    use Authenticatable, Authorizable, HasFactory, UserObserver;
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +22,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'name', 'email',
+        'name', 'email','client_id', 'client_secret'
     ];
 
     /**
@@ -48,4 +49,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
          $pass = Hash::make(($val));
          $this->attributes['password'] = $pass;
      }
+
+
+     public function setClientIdAttribute($val){
+        $this->attributes['client_id'] = 'client_id_'.$val;
+    }
+
+    public function setClientSecretAttribute($val){
+        $this->attributes['client_secret'] = 'client_secret_'.$val;
+    }
 }
