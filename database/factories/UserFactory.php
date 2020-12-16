@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Http\Controllers\AuthController;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,9 +22,14 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $auth = new AuthController();
         return [
-            'name' => $this->faker->name,
-            'email' => $this->faker->unique()->safeEmail,
+            'name' => 'superUser',
+            'email' => 'superuser@superuser.com',
+            'password' => $this->faker->password(4,20),
+            'client_id' => $auth->generateApiKey(),
+            'client_secret' => $auth->generateApiKey(),
+            'is_admin' => true
         ];
     }
 }

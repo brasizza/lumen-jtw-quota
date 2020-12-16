@@ -24,9 +24,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/register', 'AuthController@register');
     $router->post('/login', 'AuthController@login');
+
     //Metodo que só pode ser acessado com o usuário autenticado
     $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->post('/validateToken', 'ApiConsumer@validateToken');
+        $router->post('/transactionDone', 'ApiConsumer@successTransacion');
         $router->get('/me', 'AuthController@me');
+        $router->get('/me/detail', 'AuthController@meDetailed');
+        // $router->get('/me', 'AuthController@me');
 
     });
 });

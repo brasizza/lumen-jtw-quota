@@ -58,4 +58,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function setClientSecretAttribute($val){
         $this->attributes['client_secret'] = 'client_secret_'.$val;
     }
+
+
 }

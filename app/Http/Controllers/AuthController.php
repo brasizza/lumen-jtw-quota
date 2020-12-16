@@ -136,10 +136,22 @@ class AuthController extends Controller
         }
     }
 
-    public function me()
+    public function me($detail = false)
     {
         $user = auth()->user();
-        return $this->successResponse($user);
+        $quota = new QuotaController();
+        $transactions = new TransactionController();
+        $userArray = $user->toArray();
+        $transactions_month = $transactions->getTransactionsMonth();
+        $userArray['quota'] = $quota->getQuotaCurrentMonth();
+        $userArray['transactions'] = ($detail) ?   $transactions->getTransactionsMonthDetail() :  $transactions_month;
+        $userArray['remaining'] = $quota->getQuotaCurrentMonth()-$transactions_month;
+        return $this->successResponse($userArray);
+    }
+
+    public function meDetailed(){
+        return $this->me(true);
+
     }
 
     public function generateApiKey()
@@ -152,4 +164,6 @@ class AuthController extends Controller
         $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
+
+
 }
