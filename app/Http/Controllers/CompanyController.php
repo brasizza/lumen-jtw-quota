@@ -31,7 +31,7 @@ class CompanyController extends Controller
             if (!$requestCEP) {
                 return $this->errorResponse('Fail to complete', Response::HTTP_BAD_REQUEST);
             }
-            TransactionController::incrementTransactionUser(__METHOD__);
+            TransactionController::incrementTransaction(__METHOD__);
             return $this->successResponse(TransactionController::buildResponse($requestCEP));
         } catch (Exception $e) {
             return $this->errorResponse('Fail to complete', Response::HTTP_BAD_REQUEST);

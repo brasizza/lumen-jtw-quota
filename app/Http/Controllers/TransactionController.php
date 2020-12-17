@@ -31,7 +31,7 @@ class TransactionController extends Controller
         return  Transaction::where('user_id', $user->id)->where('created_at', '>=', $firstDay)->where('created_at', '<=', $lastDay)->get();
     }
 
-    public static function incrementTransactionUser($service)
+    public static function incrementTransaction($service)
     {
         $user = auth()->user();
         $transaction = new Transaction([
