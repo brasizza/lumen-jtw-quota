@@ -6,6 +6,7 @@ use App\Models\ExtraQuotas;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Http\Request;
 
 class QuotaController extends Controller
 {
@@ -18,23 +19,28 @@ class QuotaController extends Controller
 
     public function __construct(){}
 
-    public function getQuotaCurrentMonth(){
-
+    public function getCurrentQuota(){
         $user = auth()->user();
-        $firstDayUTS = mktime(0, 0, 0, date("m"), 1, date("Y"));
-        $lastDayUTS = mktime(0, 0, 0, date("m"), date('t'), date("Y"));
-        $firstDay = date("Y-m-d 00:00:00", $firstDayUTS);
-        $lastDay = date("Y-m-d 23:59:59", $lastDayUTS);
-        $maxQuotaMonth = ExtraQuotas::where('user_id', $user->id)->where('expiration', '>=', $firstDay)->where('expiration', '<=', $lastDay)->sum('quantity');
-        $maxQuotaMonth+=$user->quota;
-        return $maxQuotaMonth;
+        $maxQuota = ExtraQuotas::where('user_id', $user->id)->sum('quantity');
+        $maxQuota+=$user->quota;
+        return $maxQuota;
     }
 
     public function getRemainingQuota(){
-        $quota = $this->getQuotaCurrentMonth();
+        $quota = $this->getCurrentQuota();
+
         $transactionController = new TransactionController();
-        $transaction = $transactionController->getTransactionsMonth();
+        $transaction = $transactionController->getTotalTransactions();
         return ($quota-$transaction);
     }
-    //
+
+    public function incrementQuota(Request $request){
+       $user = User::where('email' , $request->email)->first();
+       $quota = ExtraQuotas::create([
+            'user_id' => $user->id,
+            'quantity' => $request->quantity
+
+        ]);
+        return $this->successResponse($quota);
+    }
 }

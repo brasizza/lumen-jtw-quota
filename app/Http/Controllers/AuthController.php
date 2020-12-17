@@ -49,8 +49,17 @@ class AuthController extends Controller
     {
 
         return $this->validate($request, [
-            'email' => 'required|string',
+            'email' => 'required|email',
             'password' =>  'required|string'
+        ]);
+    }
+
+
+    public function isQuotaValid(Request $request)
+    {
+        return $this->validate($request, [
+            'email' => 'required|email|exists:users,email',
+            'quota' =>  'required|integer'
         ]);
     }
 
@@ -103,13 +112,12 @@ class AuthController extends Controller
         if ($this->isLoginCredentiallValid($request)) {
             $credentials = $request->only(['client_id', 'client_secret']);
             $user =  User::where('client_id', $request->client_id)->where('client_secret', $request->client_secret)->first();
-            if($user){
+            if ($user) {
                 $token = auth()->setTTL(env('JWT_TTL', '60'))->login($user);
                 return $token;
-            }else{
+            } else {
                 return null;
             }
-
         }
     }
 
@@ -136,22 +144,36 @@ class AuthController extends Controller
         }
     }
 
+
+    public function incrementQuota(Request $request)
+    {
+        $user = auth()->user();
+        if ($user->is_admin !== 1) {
+            return $this->errorResponse('Method not allowed', Response::HTTP_METHOD_NOT_ALLOWED);
+        }
+        if ($this->isQuotaValid($request)) {
+            $quotaController = new QuotaController();
+            return  $quotaController->incrementQuota($request);
+        }
+    }
+
     public function me($detail = false)
     {
         $user = auth()->user();
         $quota = new QuotaController();
         $transactions = new TransactionController();
         $userArray = $user->toArray();
-        $transactions_month = $transactions->getTransactionsMonth();
-        $userArray['quota'] = $quota->getQuotaCurrentMonth();
-        $userArray['transactions'] = ($detail) ?   $transactions->getTransactionsMonthDetail() :  $transactions_month;
-        $userArray['remaining'] = $quota->getQuotaCurrentMonth()-$transactions_month;
+        $total_transactions = $transactions->getTotalTransactions();
+        $userArray['quota'] = $quota->getCurrentQuota();
+        $userArray['transactions'] =   $total_transactions;
+       ($detail) ?  $userArray['month_transactions'] =   $transactions->getTransactionsMonthDetail() : null;
+        $userArray['remaining'] = $quota->getCurrentQuota() - $total_transactions;
         return $this->successResponse($userArray);
     }
 
-    public function meDetailed(){
+    public function meDetailed()
+    {
         return $this->me(true);
-
     }
 
     public function generateApiKey()
@@ -164,6 +186,4 @@ class AuthController extends Controller
         $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
-
-
 }

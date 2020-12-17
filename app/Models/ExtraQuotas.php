@@ -9,7 +9,7 @@ class ExtraQuotas extends Model
 {
     protected $fillable = [
 
-        'user_id', 'expiration', 'quantity'
+        'user_id',  'quantity'
     ];
 
      //REFERENCE OF USER
