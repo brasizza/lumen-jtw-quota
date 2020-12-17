@@ -31,7 +31,7 @@ class TransactionController extends Controller
         return  Transaction::where('user_id', $user->id)->where('created_at', '>=', $firstDay)->where('created_at', '<=', $lastDay)->get();
     }
 
-    public static function incrementTransaction($service)
+    public static function incrementTransaction($service , $response )
     {
         $user = auth()->user();
         $transaction = new Transaction([
@@ -39,6 +39,7 @@ class TransactionController extends Controller
         ]);
         $transaction->user_id = $user->id;
         $transaction->save();
+        return self::buildResponse($response);
     }
 
     public static function buildResponse($response){

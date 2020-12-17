@@ -29,7 +29,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/me', 'AuthController@me');
         $router->get('/me/detail', 'AuthController@me');
         //INTERNAL ROUTE TO TESTE OUR QUOTA
-        $router->get('/cep/{cep}', 'CompanyController@findCep');
+        $router->get('/cep/{cep}', 'CompanyController@cep');
         $router->put('/quota', 'QuotaController@incrementQuota');
         // $router->get('/me', 'AuthController@me');
 
