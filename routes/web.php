@@ -27,8 +27,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     //Metodo que só pode ser acessado com o usuário autenticado
     $router->group(['middleware' => 'auth'], function () use ($router) {
-        $router->post('/validateToken', 'ApiConsumer@validateTokenConsumer');
-        $router->post('/transactionDone', 'ApiConsumer@successTransacionConsumer');
         $router->get('/me', 'AuthController@me');
         $router->get('/me/detail', 'AuthController@meDetailed');
         //INTERNAL ROUTE TO TESTE OUR QUOTA
