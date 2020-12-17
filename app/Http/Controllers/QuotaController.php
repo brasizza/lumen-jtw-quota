@@ -42,8 +42,7 @@ class QuotaController extends Controller
     public static function getRemainingQuota()
     {
         $quota = self::getCurrentQuota();
-        $transactionController = new TransactionController();
-        $transaction = $transactionController->getTotalTransactions();
+        $transaction = TransactionController::getTotalTransactions();
         return ($quota - $transaction);
     }
 

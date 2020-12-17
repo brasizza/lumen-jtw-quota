@@ -141,12 +141,11 @@ class AuthController extends Controller
     public function me($detail = false)
     {
         $user = auth()->user();
-        $transactions = new TransactionController();
         $userArray = $user->toArray();
-        $total_transactions = $transactions->getTotalTransactions();
+        $total_transactions = TransactionController::getTotalTransactions();
         $userArray['quota'] = QuotaController::getCurrentQuota();
         $userArray['transactions'] =   $total_transactions;
-       ($detail) ?  $userArray['month_transactions'] =   $transactions->getTransactionsMonthDetail() : null;
+       ($detail) ?  $userArray['month_transactions'] =   TransactionController::getTransactionsMonthDetail() : null;
         $userArray['remaining'] = QuotaController::getCurrentQuota() - $total_transactions;
         return $this->successResponse($userArray);
     }
