@@ -2,6 +2,7 @@
 
 namespace App\Traits\Observers;
 
+use App\Helpers\Commons;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
@@ -12,6 +13,11 @@ trait UserObserver
     {
 
         parent::boot();
+
+        static::creating(function($model){
+           $model->client_id = Commons::uuid();
+           $model->client_secret = Commons::uuid();
+        });
         //Executa uma ação assim que o registro for adicionado no banco de dados!
         static::created(function (User $user) {
             //Recemos aqui a instância do objeto $user já modificado com os dados finais após a inclusão.

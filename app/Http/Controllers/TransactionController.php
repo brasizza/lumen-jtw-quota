@@ -1,9 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Transaction;
-use App\Models\User;
 
 class TransactionController extends Controller
 {
@@ -16,10 +14,8 @@ class TransactionController extends Controller
     {
     }
 
-    public function getTotalTransactions()
-    {
+    public function getTotalTransactions(){
         $user = auth()->user();
-
         $monthUsage = Transaction::where('user_id', $user->id)->count();
         return $monthUsage ?? 0;
     }
@@ -43,5 +39,11 @@ class TransactionController extends Controller
         ]);
         $transaction->user_id = $user->id;
         $transaction->save();
+    }
+
+    public static function buildResponse($response){
+        $jsonResponse['data'] = $response;
+        $jsonResponse['remaining'] = QuotaController::getRemainingQuota();
+        return $jsonResponse;
     }
 }

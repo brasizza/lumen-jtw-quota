@@ -22,9 +22,5 @@ class Controller extends BaseController
     }
 
 
-    public function successTransaction($service)
-    {
-        $transaction = new TransactionController();
-        $transaction->incrementTransactionUser($service);
-    }
+
 }

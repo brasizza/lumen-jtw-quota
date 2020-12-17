@@ -17,7 +17,6 @@ class InsertUserAdminAndQuotaStatus extends Migration
 
             $table->tinyInteger('is_admin')->default(0)->after('password');
             $table->bigInteger('quota')->default(100)->after('password');
-            //
         });
     }
 

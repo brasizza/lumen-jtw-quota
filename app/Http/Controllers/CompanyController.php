@@ -18,22 +18,21 @@ class CompanyController extends Controller
      * @return void
      */
 
-    public function __construct(Request $request){}
+    public function __construct(Request $request)
+    {
+    }
 
 
     public function findCep(Request $request, $cep)
     {
-        if ($this->hasErrors) {
-            return $this->hasErrors;
-        }
         $url = "https://viacep.com.br/ws/{$cep}/json/";
         try {
-            $requestCEP = (file_get_contents($url));
+            $requestCEP = json_decode(file_get_contents($url));
             if (!$requestCEP) {
                 return $this->errorResponse('Fail to complete', Response::HTTP_BAD_REQUEST);
             }
-            $this->successTransaction(__METHOD__);
-            return $this->successResponse($requestCEP);
+            TransactionController::incrementTransactionUser(__METHOD__);
+            return $this->successResponse(TransactionController::buildResponse($requestCEP));
         } catch (Exception $e) {
             return $this->errorResponse('Fail to complete', Response::HTTP_BAD_REQUEST);
         }
