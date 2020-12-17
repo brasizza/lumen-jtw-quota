@@ -14,14 +14,14 @@ class TransactionController extends Controller
     {
     }
 
-    public function getTotalTransactions(){
+    public static function getTotalTransactions(){
         $user = auth()->user();
         $monthUsage = Transaction::where('user_id', $user->id)->count();
         return $monthUsage ?? 0;
     }
 
 
-    public function getTransactionsMonthDetail()
+    public static  function getTransactionsMonthDetail()
     {
         $user = auth()->user();
         $firstDayUTS = mktime(0, 0, 0, date("m"), 1, date("Y"));
