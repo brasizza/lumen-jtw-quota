@@ -1,12 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Helpers\GuzzleHelper;
 use App\Traits\ApiResponser;
 use Exception;
-use GuzzleHttp\Exception\ServerException;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class CompanyController extends Controller

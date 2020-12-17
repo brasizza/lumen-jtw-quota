@@ -11,7 +11,7 @@ class Transaction extends Model{
 
     protected $hidden = [
 
-         'id',  'user_id'
+         'id',  'user_id', 'updated_at'
     ];
 
  //REFERENCE OF USER
