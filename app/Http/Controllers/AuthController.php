@@ -58,7 +58,7 @@ class AuthController extends Controller
 
 
 
-    public function isLoginCredentiallValid(Request $request)
+    public function isLoginCredentialValid(Request $request)
     {
         return $this->validate($request, [
             'client_id' => 'required|string',
@@ -102,7 +102,7 @@ class AuthController extends Controller
 
     public function loginWithCredential(Request $request)
     {
-        if ($this->isLoginCredentiallValid($request)) {
+        if ($this->isLoginCredentialValid($request)) {
             $credentials = $request->only(['client_id', 'client_secret']);
             $user =  User::where('client_id', $request->client_id)->where('client_secret', $request->client_secret)->first();
             if ($user) {
@@ -138,8 +138,9 @@ class AuthController extends Controller
 
 
 
-    public function me($detail = false)
+    public function me(Request $request)
     {
+        $detail = ($request->getPathInfo() =='/api/me/detail') ? true : false;
         $user = auth()->user();
         $userArray = $user->toArray();
         $total_transactions = TransactionController::getTotalTransactions();
@@ -148,11 +149,6 @@ class AuthController extends Controller
        ($detail) ?  $userArray['month_transactions'] =   TransactionController::getTransactionsMonthDetail() : null;
         $userArray['remaining'] = QuotaController::getCurrentQuota() - $total_transactions;
         return $this->successResponse($userArray);
-    }
-
-    public function meDetailed()
-    {
-        return $this->me(true);
     }
 
 
